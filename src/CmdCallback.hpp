@@ -2,6 +2,7 @@
  * BSD License
  *
  * https://github.com/pvizeli/CmdParser
+ * fork: https://github.com/RWolfer/CmdParser.git 
  */
 
 #ifndef _CMDCALLBACK_H_
@@ -21,6 +22,8 @@
 #include "CmdBuffer.hpp"
 #include "CmdParser.hpp"
 
+
+ 
 typedef void (*CmdCallFunct)(CmdParser *cmdParser);
 
 /**
@@ -30,6 +33,7 @@ typedef void (*CmdCallFunct)(CmdParser *cmdParser);
 class CmdCallbackObject
 {
   public:
+    bool bDefaultFunctionEnable = false;
     /**
      * Endless loop for process incoming data from serial.
      *
@@ -41,6 +45,15 @@ class CmdCallbackObject
     void loopCmdProcessing(CmdParser *cmdParser, CmdBufferObject *cmdBuffer,
                            Stream *serial, bool bLoopAlways);
                            
+     // *  process incoming data from serial manual
+     // *
+     // * @param cmdParser         Parser object with options set
+     // * @param cmdBuffer         Buffer object for data handling
+     // * @param serial            Arduino serial interface from comming data
+     // */
+    // void cmdProcessing(CmdParser *cmdParser, CmdBufferObject *cmdBuffer,
+                           // Stream *serial);                         
+
     /**
      * Search command in the buffer and execute the callback function.
      *
@@ -101,6 +114,37 @@ class _CmdCallback : public CmdCallbackObject
         memset(m_functList, 0x00, sizeof(CmdCallFunct) * STORESIZE);
     }
 
+    
+     /**
+     * Get Command from commandlist.
+     *
+     * @param index            index of commandlist
+     * @return                 command-string
+     */
+    const char* getCmd(unsigned int index)
+    {
+        // Store is full
+        if (index >= m_nextElement) {
+            return "ERROR: index to big";
+        }
+
+        return m_cmdList[index] ;
+    }  
+
+     /**
+     * Get current index
+     * @return                 current index
+     */
+    size_t getCurrentIndex()
+    {
+        // Store is full
+        if ( m_nextElement == 0) {
+            return 0;
+        }
+
+        return (m_nextElement-1)  ;
+    }      
+    
     /**
      * Link a callback function to command.
      *

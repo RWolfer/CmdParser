@@ -21,14 +21,17 @@ void CmdCallbackObject::loopCmdProcessing(CmdParser *      cmdParser,
             // parse command line
             if (cmdParser->parseCmd(cmdBuffer) != CMDPARSER_ERROR) {
                 // search command in store and call function
-                if (this->processCmd(cmdParser)) {
-                    // FIXME: handling cmd not found
+                if (!this->processCmd(cmdParser) && bDefaultFunctionEnable ) {
+                    // R. Wolfer: Call first function (index == 0) if no or wrong command given
+                    this->callStoreFunct(0, cmdParser);
+                    //cmdBuffer->clear();
                 }
                 if (bLoopAlways) cmdBuffer->clear();
             }
         }
     } while (bLoopAlways);
 }
+
 
 bool CmdCallbackObject::processCmd(CmdParser *cmdParser)
 {

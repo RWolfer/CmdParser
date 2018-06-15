@@ -72,6 +72,8 @@ myCallbackP.processCmd(cstrCmd);
 ```
 
 ### Options
+- Optional default function for unknown commands: cmdCallback.bDefaultFunctionEnable  = true;
+
 - optional fourth paramter in loopCmdProcessing to toggle if function returns if no serial characters are to be processed
 ```c++
 #include <CmdCallback.hpp>
